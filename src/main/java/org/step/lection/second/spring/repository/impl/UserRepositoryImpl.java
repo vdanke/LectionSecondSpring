@@ -1,57 +1,58 @@
 package org.step.lection.second.spring.repository.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.step.lection.second.spring.model.User;
-import org.step.lection.second.spring.model.UserMapper;
 import org.step.lection.second.spring.repository.UserRepository;
 
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
-    private final DataSource dataSource;
-    private final JdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate namedJdbcTemplate;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    @Autowired
-    public UserRepositoryImpl(@Qualifier("devDataSource") DataSource dataSource) {
-        this.dataSource = dataSource;
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
+//    @Autowired
+//    private EntityManagerFactory entityManagerFactory;
+//
+//    public void init() {
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
+//    }
 
     @Override
     public List<User> findAll() {
-        return jdbcTemplate.query("SELECT * FROM USERS", new UserMapper());
+        return entityManager.createQuery("select u from User u", User.class)
+                .getResultList();
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(UUID id) {
         return Optional.ofNullable(
-                jdbcTemplate.queryForObject("SELECT * FROM USERS WHERE ID = ?", new Object[]{id}, new UserMapper())
+                entityManager.find(User.class, id)
         );
     }
 
     @Override
     public boolean save(User user) {
-        int update = jdbcTemplate.update("INSERT INTO USERS(id, username, password) value (?, ?, ?)",
-                user.getId(),
-                user.getUsername(),
-                user.getPassword()
-        );
-        return update != -1;
+        entityManager.persist(user);
+        return true;
     }
 
     @Override
-    public Long getMaxId() {
-        return jdbcTemplate.queryForObject("SELECT MAX(id) FROM USERS", Long.class);
+    public Optional<User> findByUsername(String username) {
+//        Query query = entityManager.createQuery("select u from User u where u.username=:username");
+//        TypedQuery<User> query1 = entityManager.createQuery("select u from User u where u.username=:username", User.class);
+        return Optional.ofNullable(
+                entityManager.createQuery("select u from User u where u.username=:username", User.class)
+                .setParameter("username", username)
+//                .setParameter(1, username)
+                .getSingleResult()
+        );
     }
 
     //    @Autowired

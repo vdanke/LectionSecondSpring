@@ -7,6 +7,7 @@ import org.step.lection.second.spring.repository.UserRepository;
 import org.step.lection.second.spring.service.UserService;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,11 +25,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
+    public User findById(String id) {
         if (id == null) {
             throw new IllegalArgumentException("ID is null");
         }
-        return userRepository.findById(id)
+        UUID userId = UUID.fromString(id);
+
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("User with ID %d not found", id)));
     }
 
@@ -43,10 +46,6 @@ public class UserServiceImpl implements UserService {
         if (isPasswordEmpty || isUsernameEmpty) {
             throw new IllegalArgumentException("Username or password is empty");
         }
-        Long maxId = userRepository.getMaxId();
-
-        user.setId(maxId);
-
         return userRepository.save(user);
     }
 }

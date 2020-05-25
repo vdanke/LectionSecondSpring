@@ -8,7 +8,7 @@ public interface UserService {
 
     List<User> findAll();
 
-    User findById(Long id);
+    User findById(String id);
 
     boolean save(User user);
 }
