@@ -1,5 +1,6 @@
 package org.step.lection.second.spring.repository.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.step.lection.second.spring.model.User;
@@ -7,8 +8,12 @@ import org.step.lection.second.spring.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
@@ -16,6 +21,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final ValidatorFactory validatorFactory;
+    private final Validator validator;
+
+    @Autowired
+    public UserRepositoryImpl(ValidatorFactory validatorFactory) {
+        this.validatorFactory = validatorFactory;
+        this.validator = validatorFactory.getValidator();
+    }
 
 //    @Autowired
 //    private EntityManagerFactory entityManagerFactory;
@@ -39,7 +53,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean save(User user) {
+        Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
+
+        if (constraintViolations.size() != 0) {
+            throw new IllegalStateException("Constraint violations");
+        }
         entityManager.persist(user);
+
         return true;
     }
 

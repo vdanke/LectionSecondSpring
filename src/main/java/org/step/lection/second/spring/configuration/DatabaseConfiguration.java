@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -67,6 +69,11 @@ public class DatabaseConfiguration {
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean
+    public ValidatorFactory validatorFactory() {
+        return Validation.buildDefaultValidatorFactory();
     }
 
     @Bean("prodDataSource")

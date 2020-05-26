@@ -2,6 +2,7 @@ package org.step.lection.second.spring.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.step.lection.second.spring.model.User;
 import org.step.lection.second.spring.repository.UserRepository;
 import org.step.lection.second.spring.service.UserService;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean save(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User is null");
