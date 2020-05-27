@@ -6,15 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.step.lection.second.spring.model.User;
 import org.step.lection.second.spring.repository.UserRepository;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -46,8 +44,12 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findById(UUID id) {
+        EntityGraph<?> entityGraph = entityManager.getEntityGraph("User.findAllMessages");
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("javax.persistence.loadgraph", entityGraph);
+
         return Optional.ofNullable(
-                entityManager.find(User.class, id)
+                entityManager.find(User.class, id, attributes)
         );
     }
 

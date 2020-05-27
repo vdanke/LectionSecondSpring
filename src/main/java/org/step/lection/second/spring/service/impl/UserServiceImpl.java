@@ -21,6 +21,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -49,5 +50,11 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Username or password is empty");
         }
         return userRepository.save(user);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
     }
 }

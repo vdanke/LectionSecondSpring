@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.step.lection.second.spring.configuration.DatabaseConfiguration;
+import org.step.lection.second.spring.configuration.web.WebConfig;
 import org.step.lection.second.spring.model.Message;
 import org.step.lection.second.spring.model.User;
 import org.step.lection.second.spring.repository.UserRepository;
@@ -25,7 +27,8 @@ import javax.validation.ValidatorFactory;
 import java.util.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {DatabaseConfiguration.class})
+@ContextConfiguration(classes = {DatabaseConfiguration.class, WebConfig.class})
+@WebAppConfiguration
 @Transactional
 public class TestClass {
 

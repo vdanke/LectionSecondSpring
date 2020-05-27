@@ -12,8 +12,19 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 @NamedEntityGraph(name = "User.findAllMessages", attributeNodes = {
-        @NamedAttributeNode(value = "messageList")
-})
+            @NamedAttributeNode(value = "messageList"),
+//            @NamedAttributeNode(value = "courseRatingList", subgraph = "user_courses")
+        }
+//        subgraphs = {
+//            @NamedSubgraph(
+//                    name = "user_courses",
+//                    attributeNodes = {
+//                            @NamedAttributeNode("course")
+//                    }
+////                    type = Course.class
+//            )
+//        }
+)
 public class User {
 
     @Id
@@ -36,6 +47,20 @@ public class User {
     @Column(name = "age", nullable = false)
     private Integer age;
 
+//    @ManyToMany
+//    @JoinTable(
+//            name = "course_user",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "course_id")
+//    )
+//    private List<Course> courseList;
+
+//    @OneToMany(mappedBy = "user")
+//    private List<CourseCompositeUsers> courseUsers;
+
+    @OneToMany(mappedBy = "user")
+    private List<CourseRating> courseRatingList;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Portfolio portfolio;
 
@@ -55,6 +80,30 @@ public class User {
         this.password = password;
         this.age = age;
     }
+
+    public List<CourseRating> getCourseRatingList() {
+        return courseRatingList;
+    }
+
+    public void setCourseRatingList(List<CourseRating> courseRatingList) {
+        this.courseRatingList = courseRatingList;
+    }
+
+    //    public List<CourseCompositeUsers> getCourseUsers() {
+//        return courseUsers;
+//    }
+//
+//    public void setCourseUsers(List<CourseCompositeUsers> courseUsers) {
+//        this.courseUsers = courseUsers;
+//    }
+
+    //    public List<Course> getCourseList() {
+//        return courseList;
+//    }
+//
+//    public void setCourseList(List<Course> courseList) {
+//        this.courseList = courseList;
+//    }
 
     public Set<Role> getAuthorities() {
         return authorities;

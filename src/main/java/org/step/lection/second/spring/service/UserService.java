@@ -11,4 +11,6 @@ public interface UserService {
     User findById(String id);
 
     boolean save(User user);
+
+    User findByUsername(String username);
 }
