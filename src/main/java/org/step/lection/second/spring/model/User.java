@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.step.lection.second.spring.model.User.USER_MESSAGES_ENTITY_GRAPH;
+
 @Entity
 @Table(name = "users")
-@NamedEntityGraph(name = "User.findAllMessages", attributeNodes = {
+@NamedEntityGraph(name = USER_MESSAGES_ENTITY_GRAPH, attributeNodes = {
             @NamedAttributeNode(value = "messageList"),
 //            @NamedAttributeNode(value = "courseRatingList", subgraph = "user_courses")
         }
@@ -25,7 +27,10 @@ import java.util.UUID;
 //            )
 //        }
 )
-public class User {
+@NamedQuery(name = "User.findByUsername", query = "select u from User u where u.username=?1")
+public class User extends AbstractBaseEntity {
+
+    public static final String USER_MESSAGES_ENTITY_GRAPH = "User.findAllMessages";
 
     @Id
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_user_seq_generator")

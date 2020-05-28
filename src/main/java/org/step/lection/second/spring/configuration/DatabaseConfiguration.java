@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -28,6 +29,7 @@ import java.util.Properties;
         @PropertySource(value = "classpath:/db.properties")
 })
 @EnableTransactionManagement
+@EnableJpaRepositories(basePackages = "org.step")
 public class DatabaseConfiguration {
 
     private Environment env;
@@ -58,7 +60,7 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
 
         transactionManager.setEntityManagerFactory(entityManagerFactory);

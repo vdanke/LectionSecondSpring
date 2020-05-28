@@ -1,12 +1,17 @@
 package org.step.lection.second.spring.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.ContextStartedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.step.lection.second.spring.model.User;
 import org.step.lection.second.spring.repository.UserRepository;
+import org.step.lection.second.spring.repository.UserRepositorySpringData;
 import org.step.lection.second.spring.service.UserService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,10 +19,12 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserRepositorySpringData userRepositorySpringData;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserRepositorySpringData userRepositorySpringData) {
         this.userRepository = userRepository;
+        this.userRepositorySpringData = userRepositorySpringData;
     }
 
     @Override
@@ -57,4 +64,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
     }
+
+//    @EventListener(value = {ContextRefreshedEvent.class})
+//    public void createUsers() {
+//        User first = new User("firstuser@mail.ru", "firstpassword", 20);
+//        User second = new User("seconduser@mail.ru", "firstpassword", 20);
+//        User third = new User("thirduser@mail.ru", "firstpassword", 20);
+//
+//        userRepositorySpringData.saveAll(Arrays.asList(first, second, third));
+//    }
 }
